@@ -3,7 +3,7 @@
 ## Get started
 
 
-1. Install Docker
+1. Install Docker and pnpm package manager
 2. Run Docker Compose
 
    ```bash
