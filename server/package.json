@@ -1,5 +1,17 @@
 {
 	"dependencies": {
-		"express": "^5.1.0"
+		"cors": "^2.8.5",
+		"express": "^5.1.0",
+		"mongoose": "^8.19.2",
+		"winston": "^3.18.3"
+	},
+	"type": "module",
+	"scripts": {
+		"start": "node index.mjs",
+		"test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
+	},
+	"devDependencies": {
+		"jest": "^30.2.0",
+		"supertest": "^7.1.4"
 	}
 }
