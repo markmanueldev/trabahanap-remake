@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
 import {
-    credentials,
-    job_seeker_schema,
-    job_seeker_skills,
-    skills,
+  credentials,
+  job_seeker_schema,
+  job_seeker_skills,
+  skills,
 } from "../schemas/job_seeker_schema.mjs";
 
 export const JobSeeker = mongoose.model("job_seekers", job_seeker_schema, "job_seekers");
