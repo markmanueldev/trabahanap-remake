@@ -20,13 +20,13 @@
    pnpm install
    ```
 
-## To test files 
+## To test all files 
 
 1. Go to server dir
 2. Test files in this format
 
    ```bash
-   pnpm test ./tests/folder_name/file_name.integ.mjs
+   pnpm test 
    ```
 
 ## For Expo Go Setup (Pending)
