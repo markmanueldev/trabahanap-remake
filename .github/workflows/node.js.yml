@@ -42,8 +42,7 @@ jobs:
       run: pnpm install --frozen-lockfile
       working-directory: ./server
     - name: Set MongoDB Test URL
-      run: echo "MONGODB_URI=mongodb://mongodb:27017/ci_test_database" >> $GITHUB_ENV 
-      working-directory: ./server
+      run: echo "MONGODB_URI=mongodb://localhost:27017/ci_test_database" >> $GITHUB_ENV 
       
     - name: Automatically test all jest files in the server
       run: pnpm test
