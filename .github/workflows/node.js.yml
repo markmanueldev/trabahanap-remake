@@ -40,5 +40,6 @@ jobs:
       run: pnpm install --frozen-lockfile
       working-directory: ./server
       
-    - name: Automatically test all jest files
+    - name: Automatically test all jest files in the server
       run: pnpm test
+      working-directory: ./server
