@@ -29,6 +29,8 @@
    pnpm test 
    ```
 
+## With CI/CD Pipeline
+
 ## For Expo Go Setup (Pending)
 
 MIT License
