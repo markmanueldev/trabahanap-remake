@@ -31,7 +31,14 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
-        
-    - run: pnpm install --frozen-lockfile
-    - run: pnpm run build --if-present
+
+    - name: Install dependencies in client directory
+      run: pnpm install --frozen-lockfile
+      working-directory: ./client
+
+    - name: Install dependencies in server directory
+      run: pnpm install --frozen-lockfile
+      working-directory: ./server
+      
+    - name: Automatically test all jest files
     - run: pnpm test
