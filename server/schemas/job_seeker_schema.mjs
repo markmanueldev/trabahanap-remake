@@ -15,8 +15,9 @@ export const job_seeker_schema = new mongoose.Schema(
       index: true,
       default: null,
       sparse: true,
+      required: true,
     },
-    password: { type: String, default: null },
+    password: { type: String, default: null, required: true },
     phone_number: { type: String, default: null },
     profile_image: { type: String, default: null },
     bio: { type: String, default: null },
@@ -40,7 +41,7 @@ export const job_seeker_schema = new mongoose.Schema(
     },
     salary_rate: { type: Number, default: 0 },
     job_seeker_rating: { type: Number, min: 0, max: 5, default: 0 },
-  },
+  }, 
   {
     toJSON: {
       transform: function (doc, ret) {
