@@ -1,10 +1,9 @@
 import express from "express";
 import { body, validationResult } from "express-validator";
 import winston from "winston";
-import { createJobSeeker } from "../../services/job_seeker_services/create_job_seeker.mjs";
+import { createEmployer } from "../../services/employer_services/create_employer.mjs";
 
 const router = express.Router();
-
 const logger = winston.createLogger({
   level: "info",
   format: winston.format.json(),
@@ -21,6 +20,7 @@ router.post(
     .withMessage("First name is required"),
   body("middle_name")
     .isString()
+    .optional()
     .trim()
     .escape(),
   body("last_name")
@@ -67,18 +67,19 @@ router.post(
     .escape()
     .withMessage("Barangay is required"),
   async (req, res) => {
+
     const error = validationResult(req);
     if (!error.isEmpty()) {
       return res.status(400).json({ error: error.array() });
     }
 
     try {
-      const jobSeekerData = req.body;
-      const request = await createJobSeeker(jobSeekerData);
-        logger.info(`Job seeker profile created: ${request._id}`);
-        res.status(201).json(request);
+      const employerData = req.body;
+      const request = await createEmployer(employerData);
+      logger.info(`Employer profile created: ${request._id}`);
+      res.status(201).json(request);
     } catch (error) {
-      logger.error(`Error in /create job seeker route: ${error.message}`);
+      logger.error(`Error in /create employer route: ${error.message}`);
       res.status(400).json({ error: error.message });
     }
   }
