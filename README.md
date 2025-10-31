@@ -29,7 +29,7 @@
    pnpm test 
    ```
 
-## With CI/CD Pipeline
+## With CI/CD Pipeline (Finally Working)
 
 ## For Expo Go Setup (Pending)
 
