@@ -24,8 +24,7 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-          --entrypoint ""
-
+          
     strategy:
       matrix:
         node-version: [18.x, 20.x, 22.x]
