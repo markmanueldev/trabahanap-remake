@@ -1,25 +1,20 @@
 # This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
-
 name: Node.js CI/CD Pipeline (using PNPM)
-
 on:
   push:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
-
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     services:
       mongodb: 
         image: mongo:6.0 
         ports:
           - 27017:27017
-        options: >
+        options: >-
           --health-cmd "mongosh --eval 'db.adminCommand({ping: 1})'"
           --health-interval 10s
           --health-timeout 5s
@@ -29,10 +24,8 @@ jobs:
       matrix:
         node-version: [18.x, 20.x, 22.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-
     steps:
     - uses: actions/checkout@v4
-
     - name: Use pnpm
       uses: pnpm/action-setup@v4
       with:
@@ -42,15 +35,12 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
-
     - name: Install dependencies in client directory
       run: pnpm install --frozen-lockfile
       working-directory: ./client
-
     - name: Install dependencies in server directory
       run: pnpm install --frozen-lockfile
       working-directory: ./server
-
     - name: Set MongoDB Test URL
       run: echo "MONGODB_URI=mongodb://mongodb:27017/ci_test_database" >> $GITHUB_ENV 
       working-directory: ./server
