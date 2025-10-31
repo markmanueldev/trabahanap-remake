@@ -14,6 +14,10 @@ jobs:
         image: mongo:6.0 
         ports:
           - 27017:27017
+        env:
+          MONGO_INITDB_ROOT_USERNAME: admin
+          MONGO_INITDB_ROOT_PASSWORD: password
+          MONGO_INITDB_DATABASE: mongodb
         options: >-
           --health-cmd "mongosh --eval 'db.adminCommand({ping: 1})'"
           --health-interval 10s
@@ -42,7 +46,7 @@ jobs:
       run: pnpm install --frozen-lockfile
       working-directory: ./server
     - name: Set MongoDB Test URL
-      run: echo "MONGODB_URI=mongodb://localhost:27017/ci_test_database" >> $GITHUB_ENV 
+      run: echo "MONGODB_URI=mongodb://admin:password@localhost:27017/ci_test_database?authSource=admin" >> $GITHUB_ENV 
       
     - name: Automatically test all jest files in the server
       run: pnpm test
