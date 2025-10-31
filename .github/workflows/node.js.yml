@@ -14,6 +14,18 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    services:
+      mongodb: 
+        image: mongo:6.0 
+        ports:
+          - 27017:27017
+        options: >
+          --health-cmd "mongosh --eval 'db.adminCommand({ping: 1})'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+          --entrypoint ""
+
     strategy:
       matrix:
         node-version: [18.x, 20.x, 22.x]
@@ -38,6 +50,10 @@ jobs:
 
     - name: Install dependencies in server directory
       run: pnpm install --frozen-lockfile
+      working-directory: ./server
+
+    - name: Set MongoDB Test URL
+      run: echo "MONGODB_URI=mongodb://mongodb:27017/ci_test_database" >> $GITHUB_ENV 
       working-directory: ./server
       
     - name: Automatically test all jest files in the server
