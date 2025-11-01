@@ -12,6 +12,8 @@ const logger = winston.createLogger({
 
 const app = express();
 app.use(express.json());
+app.set('trust proxy', true);
+
 
 //defined routes
 app.use("/api/employers", employerProfiles);
