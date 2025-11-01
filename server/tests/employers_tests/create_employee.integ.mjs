@@ -14,9 +14,7 @@ describe("Create Employee Integration Test", () => {
   beforeEach(async () => {
     await Employer.deleteMany({});
   });
-  afterEach(async () => {
-    await Employer.deleteMany({});
-  });
+
 
   test("Should create a new employee successfully with a complete integration flow", async () => {
     const employerData = {

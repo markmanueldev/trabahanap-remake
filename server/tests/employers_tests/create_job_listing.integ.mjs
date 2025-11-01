@@ -16,10 +16,7 @@ describe("Create Job Listing Integration Test", () => {
     await Employer.deleteMany({});
     await JobListing.deleteMany({});
   });
-  afterEach(async () => {
-    await Employer.deleteMany({});
-    await JobListing.deleteMany({});
-  });
+
 
   test("Should create a new job listing successfully with a complete integration flow", async () => {
     const employerData = {

@@ -14,9 +14,7 @@ describe("Create Job Seeker Integration Test", () => {
   beforeEach(async () => {
     await JobSeeker.deleteMany({});
   });
-  afterEach(async () => {
-    await JobSeeker.deleteMany({});
-  });
+  
 
   test("Should create a new job seeker successfully with a complete integration flow", async () => {
     const jobSeekerData = {
