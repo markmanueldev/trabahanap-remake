@@ -11,6 +11,9 @@ describe("Create Job Seeker Integration Test", () => {
   afterAll(async () => {
     await mongoose.disconnect();
   });
+  beforeEach(async () => {
+    await JobSeeker.deleteMany({});
+  });
   afterEach(async () => {
     await JobSeeker.deleteMany({});
   });

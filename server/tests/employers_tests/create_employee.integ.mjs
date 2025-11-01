@@ -11,6 +11,9 @@ describe("Create Employee Integration Test", () => {
   afterAll(async () => {
     await mongoose.disconnect();
   });
+  beforeEach(async () => {
+    await Employer.deleteMany({});
+  });
   afterEach(async () => {
     await Employer.deleteMany({});
   });

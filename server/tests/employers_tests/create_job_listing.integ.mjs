@@ -12,6 +12,10 @@ describe("Create Job Listing Integration Test", () => {
   afterAll(async () => {
     await mongoose.disconnect();
   });
+  beforeEach(async () => {
+    await Employer.deleteMany({});
+    await JobListing.deleteMany({});
+  });
   afterEach(async () => {
     await Employer.deleteMany({});
     await JobListing.deleteMany({});
@@ -40,14 +44,16 @@ describe("Create Job Listing Integration Test", () => {
       rate: 100,
       duration: "Test Job Listing Duration",
       location: "Test Job Listing Location",
-      image_urls: ["https://example.com/image1.jpg", "https://example.com/image2.jpg"],
+      image_urls: [
+        "https://example.com/image1.jpg",
+        "https://example.com/image2.jpg",
+      ],
     };
 
     const response = await request(app)
       .post("/api/job_listings/create")
       .send(jobListingData);
 
-   
     expect(response.status).toBe(201);
     expect(response.body).toHaveProperty("_id");
     expect(response.body.employer_id).toBe(employer._id.toString());
