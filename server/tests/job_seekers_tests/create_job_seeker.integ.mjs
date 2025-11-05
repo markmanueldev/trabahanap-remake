@@ -14,34 +14,34 @@ describe("Create Job Seeker Integration Test", () => {
   beforeEach(async () => {
     await JobSeeker.deleteMany({});
   });
-  
 
   test("Should create a new job seeker successfully with a complete integration flow", async () => {
-    const jobSeekerData = {
-      first_name: "Test",
-      middle_name: "J",
-      last_name: "JobSeeker",
-      email_address: "test_job_seeker@gmail.com",
-      password: "securepassword",
-      house_number: 456,
-      street: "Job St",
-      city: "Job City",
-      barangay: "Job Barangay",
-    };
-
+    
     //Wait a response from the server
     const response = await request(app)
       .post("/api/job_seekers/create")
-      .send(jobSeekerData);
+      .set("Accept", "application/json")
+      .field("first_name", "Test")
+      .field("middle_name", "J")
+      .field("last_name", "JobSeeker")
+      .field("email_address", "test_job_seeker@gmail.com")
+      .field("password", "securepassword")
+      .field("house_number", 456)
+      .field("street", "Job St")
+      .field("city", "Job City")
+      .field("barangay", "Job Barangay");
+
     //Assertions for response
     expect(response.status).toBe(201);
+    expect(response.headers["content-type"]).toMatch(/json/);
     expect(response.body).toHaveProperty("_id");
-    expect(response.body.first_name).toBe(jobSeekerData.first_name);
-    expect(response.body.last_name).toBe(jobSeekerData.last_name);
-    expect(response.body.house_number).toBe(jobSeekerData.house_number);
-    expect(response.body.street).toBe(jobSeekerData.street);
-    expect(response.body.city).toBe(jobSeekerData.city);
-    expect(response.body.barangay).toBe(jobSeekerData.barangay);
+    expect(response.body.first_name).toBe("Test");
+    expect(response.body.middle_name).toBe("J")
+    expect(response.body.last_name).toBe("JobSeeker");
+    expect(response.body.house_number).toBe(456);
+    expect(response.body.street).toBe("Job St");
+    expect(response.body.city).toBe("Job City");
+    expect(response.body.barangay).toBe("Job Barangay");
     expect(response.body.verification_status).toBe("pending");
 
     expect(response.body).not.toHaveProperty("password");
@@ -49,14 +49,16 @@ describe("Create Job Seeker Integration Test", () => {
     //Verify data is saved in the database
     const savedJobSeeker = await JobSeeker.findById(response.body._id);
     expect(savedJobSeeker).not.toBeNull();
-    expect(savedJobSeeker.first_name).toBe(jobSeekerData.first_name);
-    expect(savedJobSeeker.last_name).toBe(jobSeekerData.last_name);
-    expect(savedJobSeeker.house_number).toBe(jobSeekerData.house_number);
-    expect(savedJobSeeker.street).toBe(jobSeekerData.street);
-    expect(savedJobSeeker.city).toBe(jobSeekerData.city);
-    expect(savedJobSeeker.barangay).toBe(jobSeekerData.barangay);
+    expect(savedJobSeeker.first_name).toBe("Test");
+    expect(savedJobSeeker.middle_name).toBe("J");
+    expect(savedJobSeeker.last_name).toBe("JobSeeker");
+    expect(savedJobSeeker.house_number).toBe(456);
+    expect(savedJobSeeker.street).toBe("Job St");
+    expect(savedJobSeeker.city).toBe("Job City");
+    expect(savedJobSeeker.barangay).toBe("Job Barangay");
     expect(savedJobSeeker.verification_status).toBe("pending");
 
+    //Uncomment if hashing is implemented
     //expect(savedJobSeeker.password).not.toBe(jobSeekerData.password);
     //expect(savedJobSeeker.password).toMatch(/^\$2[ab]\$\d+\$/);
   });

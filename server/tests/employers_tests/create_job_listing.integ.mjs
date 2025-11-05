@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
+import path from "path";
 import request from "supertest";
+import { fileURLToPath } from "url";
 import { connectDB } from "../../connection/mongodb_connection.mjs";
 import app from "../../index.mjs";
 import Employer from "../../models/employer_model.mjs";
@@ -17,50 +19,60 @@ describe("Create Job Listing Integration Test", () => {
     await JobListing.deleteMany({});
   });
 
-
   test("Should create a new job listing successfully with a complete integration flow", async () => {
-    const employerData = {
-      first_name: "Test",
-      middle_name: "E",
-      last_name: "Employer",
-      email_address: "test_employer@gmail.com",
-      password: "securepassword",
-      house_number: 123,
-      street: "Test St",
-      city: "Test City",
-      barangay: "Test Barangay",
-    };
+    const mockEmployer = await request(app)
+      .post("/api/employers/create")
+      .set("Accept", "application/json")
+      .field("first_name", "Test")
+      .field("middle_name", "E")
+      .field("last_name", "Employer")
+      .field("email_address", "test_employer@gmail.com")
+      .field("password", "securepassword")
+      .field("house_number", 123)
+      .field("street", "Test St")
+      .field("city", "Test City")
+      .field("barangay", "Test Barangay");
 
-    const employer = await Employer.create(employerData);
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = path.dirname(__filename);
 
-    const jobListingData = {
-      employer_id: employer._id,
-      title: "Test Job Listing",
-      description: "Test Job Listing Description",
-      position: "Test Job Listing Position",
-      rate: 100,
-      duration: "Test Job Listing Duration",
-      location: "Test Job Listing Location",
-      image_urls: [
-        "https://example.com/image1.jpg",
-        "https://example.com/image2.jpg",
-      ],
-    };
+    const TEST_IMAGE_DIR = path.join(__dirname, "..", "test_images");
+
+    const IMAGE_ONE_NAME = "test-image-one.png";
+    const IMAGE_TWO_NAME = "test-image-two.png";
+
+    const IMAGE_ONE_PATH = path.join(TEST_IMAGE_DIR, IMAGE_ONE_NAME);
+    const IMAGE_TWO_PATH = path.join(TEST_IMAGE_DIR, IMAGE_TWO_NAME);
+
+    const SERVER_DIR = path.join(__dirname, "..", "..");
+    const UPLOAD_DIR = path.join(SERVER_DIR, "uploads");
 
     const response = await request(app)
       .post("/api/job_listings/create")
-      .send(jobListingData);
+      .set("Accept", "application/json")
+      .field("employer_id", mockEmployer.body._id)
+      .field("title", "Test Job Listing")
+      .field("description", "Test Job Listing Description")
+      .field("position", "Test Job Listing Position")
+      .field("rate", 100)
+      .field("duration", "Test Job Listing Duration")
+      .field("location", "Test Job Listing Location")
+      .attach("userUploads", IMAGE_ONE_PATH)
+      .attach("userUploads", IMAGE_TWO_PATH);
 
     expect(response.status).toBe(201);
     expect(response.body).toHaveProperty("_id");
-    expect(response.body.employer_id).toBe(employer._id.toString());
-    expect(response.body.title).toBe(jobListingData.title);
-    expect(response.body.description).toBe(jobListingData.description);
-    expect(response.body.position).toBe(jobListingData.position);
-    expect(response.body.rate).toBe(jobListingData.rate);
-    expect(response.body.duration).toBe(jobListingData.duration);
-    expect(response.body.location).toBe(jobListingData.location);
-    expect(response.body.image_urls).toEqual(jobListingData.image_urls);
+    expect(response.body.employer_id).toBe(mockEmployer.body._id.toString());
+    expect(response.body.title).toBe("Test Job Listing");
+    expect(response.body.description).toBe("Test Job Listing Description");
+    expect(response.body.position).toBe("Test Job Listing Position");
+    expect(response.body.rate).toBe(100);
+    expect(response.body.duration).toBe("Test Job Listing Duration");
+    expect(response.body.location).toBe("Test Job Listing Location");
+    expect(response.body.image_urls).toBeInstanceOf(Array);
+    expect(response.body.image_urls).toHaveLength(2);
+    expect(response.body.image_urls[0]).toMatch(UPLOAD_DIR);
+    expect(response.body.image_urls[1]).toMatch(UPLOAD_DIR);
   });
 
   test("Should return 400 for invalid data and no database entry", async () => {
