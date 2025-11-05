@@ -47,7 +47,8 @@ jobs:
       working-directory: ./server
     - name: Set MongoDB Test URL
       run: echo "MONGODB_URI=mongodb://admin:password@localhost:27017/ci_test_database?authSource=admin" >> $GITHUB_ENV 
-      
+    - name: Create uploads directory for testing
+      run: mkdir -p server/uploads
     - name: Automatically test all jest files in the server
       run: pnpm test
       working-directory: ./server
