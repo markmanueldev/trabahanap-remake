@@ -1,5 +1,8 @@
+import crypto from "crypto";
 import express from "express";
 import { body, validationResult } from "express-validator";
+import path from "path";
+import { fileURLToPath } from "url";
 import winston from "winston";
 import { createJobListing } from "../../services/employer_services/create_job_listing.mjs";
 
@@ -44,6 +47,8 @@ router.post(
     if (!error.isEmpty()) {
       return res.status(400).json({ error: error.array() });
     }
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = path.dirname(__filename);
     try {
       let uploadPath = [];
 
@@ -53,14 +58,29 @@ router.post(
           : [req.files.userUploads];
 
         for (const file of files) {
-          const path = path.join(__dirname, "uploads", file.name);
-          await file.mv(path);
-          uploadPath.push(path);
+          const fileExtension = path.extname(file.name);
+          const uniqueSuffix = crypto.randomBytes(7).toString("hex");
+
+          const filepath = path.join(
+            __dirname,
+            "..",
+            "..",
+            "uploads",
+            `${uniqueSuffix}${fileExtension}`
+          );
+          await file.mv(filepath);
+          uploadPath.push(filepath);
         }
       }
 
       const jobListingData = {
-        ...req.body,
+        employer_id: req.body.employer_id,
+        title: req.body.title,
+        description: req.body.description,
+        position: req.body.position,
+        rate: req.body.rate,
+        duration: req.body.duration,
+        location: req.body.location,
         image_urls: uploadPath,
       };
 
