@@ -1,4 +1,5 @@
 import express from "express";
+import fileUpload from "express-fileupload";
 import winston from "winston";
 import { connectDB } from "./connection/mongodb_connection.mjs";
 import employerProfiles from "./routes/employer_routes/employer_profile.mjs";
@@ -11,6 +12,7 @@ const logger = winston.createLogger({
 });
 
 const app = express();
+app.use(fileUpload());
 app.use(express.json());
 app.set('trust proxy', true);
 

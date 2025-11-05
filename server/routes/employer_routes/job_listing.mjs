@@ -45,7 +45,25 @@ router.post(
       return res.status(400).json({ error: error.array() });
     }
     try {
-      const jobListingData = req.body;
+      let uploadPath = [];
+
+      if (req.files?.userUploads) {
+        const files = Array.isArray(req.files.userUploads)
+          ? req.files.userUploads
+          : [req.files.userUploads];
+
+        for (const file of files) {
+          const path = path.join(__dirname, "uploads", file.name);
+          await file.mv(path);
+          uploadPath.push(path);
+        }
+      }
+
+      const jobListingData = {
+        ...req.body,
+        image_urls: uploadPath,
+      };
+
       const request = await createJobListing(jobListingData);
       logger.info(`Job listing created: ${request._id}`);
       res.status(201).json(request);
