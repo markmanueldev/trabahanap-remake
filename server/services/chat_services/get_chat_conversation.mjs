@@ -7,12 +7,16 @@ const logger = winston.createLogger({
   transports: [new winston.transports.Console()],
 });
 
-export async function createChatConversation(chatConversationData) {
+export async function getOneChatConversation(jobListingId, jobSeekerId) {
   try {
-    const result = await ChatConversation.create(chatConversationData);
+    const result = await ChatConversation.findOne({
+      job_listing_id: jobListingId,
+      job_seeker_id: jobSeekerId,
+    }).exec();
+
     return result;
   } catch (error) {
-    logger.error(`Error creating Chat Conversation ${error.message}`);
+    logger.error(`Error finding one chat conversation ${error.message}`);
     throw error;
   }
 }
